@@ -1,14 +1,20 @@
-import Footer from "./components/Footer";
-import Header from "./components/Header";
 
 export default function Home() {
+  const posts = ['The last supper', 'Davinci', 'Mike', 'Afework']
   return (
-    <div className="min-h-screen flex flex-col font-poppins">
-      <Header />
-      <main className="  w-full flex-grow  ">
+    <div className="">
+        <div>
+          <h1>Recent Posts</h1>
+          <div className="flex gap-3">
+            {posts.map((posts) => {
+              return (
+                <div className="bg-white w-32 h-32 shadow-md  ">
 
-      </main>
-      <Footer />
+                </div>
+              )
+            })}
+          </div>
+        </div>
     </div>
   );
 }

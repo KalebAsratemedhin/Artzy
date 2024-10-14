@@ -26,7 +26,7 @@ const Footer = () => {
             </div>
 
         </div>
-        <p className='bg-gray-500 h-0.5 w-1/2 mx-auto mb-8'></p>
+        <p className='bg-gray-500 h-0.5 w-4/5 mx-auto mb-8'></p>
 
         <p className='text-gray-300 text-center mb-8'>Artzy &copy; all rights reserved.</p>
         

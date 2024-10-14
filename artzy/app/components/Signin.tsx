@@ -1,8 +1,31 @@
+'use client'
 import TextField from "./TextField"
-import { signin } from "../actions/auth"
+import { signin } from "@/server/actions/auth"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 const Signin = () => {
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const router = useRouter()
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+
+    const res = await signin(formData);
+
+    if(res.success){
+        router.push('/dashboard')
+    }
+
+    if (res.errors) {
+      setErrors(res.errors);
+    } else {
+      setErrors({});
+    }
+  };
+
   return (
     <div className="min-h-screen flex justify-center items-center p-4 font-poppins">
         
@@ -23,10 +46,10 @@ const Signin = () => {
                     <h1 className="text-emerald-300 text-4xl mt-2 font-bold text-center">Signin</h1>
                 </div>
 
-                <form action={signin} >
+                <form onSubmit={handleSubmit} >
                     <div className="flex flex-col gap-2 pt-12">
-                        <TextField type="text" title="Email" id="email" />
-                        <TextField type="password" title="Password" id="password" />
+                        <TextField type="text" title="Email" id="email" error={errors.email} />
+                        <TextField type="password" title="Password" id="password" error={errors.password} />
 
                     </div>
 
