@@ -13,21 +13,67 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid()) @db.Uuid
   fullName    String
   email       String   @unique
-  password    String   
+  username    String   @unique
+  googleId    String?  @unique // Optional for Google-authenticated users
+  password    String?          // Optional for users authenticating via Google
   address     String
   phoneNumber String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  posts       Post[]           // One-to-many relation (User creates posts)
+  comments    Comment[]        // One-to-many relation (User comments on posts)
+  likes       Post[] @relation("UserLikesPosts") // Many-to-many relation (User likes posts)
+
+  // Follower-Following relationship
+  followers  Follow[] @relation("Followers") // Users who follow this user
+  following    Follow[] @relation("Following") // Users this user follows
 }
 
 model Post {
-  id           Int      @id @default(autoincrement())
-  title        String   
-  description  String
-  picUrl       String
+  id          Int      @id @default(autoincrement())
+  title       String   
+  description String
+  picUrl      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Change authorId to match User.id's type
+  authorId    String  @db.Uuid
+  author      User     @relation(fields: [authorId], references: [id], map: "Post_Author_FK") // Many-to-one relation (Post belongs to a User)
+  
+  comments    Comment[] // One-to-many relation (Post can have many comments)
+  likes       User[] @relation("UserLikesPosts") // Many-to-many relation (Post can be liked by many users)
 }
+
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relationships
+  userId    String    @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], map: "Comment_User_FK") // Many-to-one relation (Comment belongs to a User)
+  
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id], map: "Comment_Post_FK") // Many-to-one relation (Comment belongs to a Post)
+}
+
+// Junction table for follower-following relationship
+model Follow {
+  followerId  String  @db.Uuid
+  followingId String  @db.Uuid
+
+  follower  User @relation("Following", fields: [followerId], references: [id], map: "Follow_Follower_FK")
+  following User @relation("Followers", fields: [followingId], references: [id], map: "Follow_Following_FK")
+
+  @@id([followerId, followingId])
+}
+

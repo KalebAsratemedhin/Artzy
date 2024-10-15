@@ -4,10 +4,14 @@ import { signin } from "@/server/actions/auth"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import ErrorMessage from "./ErrorMessage"
 
 const Signin = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [error, setError] = useState<string | null>()
   const router = useRouter()
+
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -16,13 +20,14 @@ const Signin = () => {
     const res = await signin(formData);
 
     if(res.success){
-        router.push('/dashboard')
+        router.push('/profile')
     }
 
-    if (res.errors) {
-      setErrors(res.errors);
-    } else {
-      setErrors({});
+    if (res.errors ) {
+      setErrors(res.errors );
+    } 
+    if (res.error){
+      setError(res.error)
     }
   };
 
@@ -52,6 +57,9 @@ const Signin = () => {
                         <TextField type="password" title="Password" id="password" error={errors.password} />
 
                     </div>
+
+                    <ErrorMessage  error={error!} clearError={(err) => setError(err)} />
+                    
 
                     <button type="submit" className="bg-emerald-500 font-medium w-full mt-10 py-2 rounded-md text-white text-xl hover:shadow-lg ">Signin</button>
                     <p className="text-gray-500 mt-4">Don't have an account? <Link href='/auth/signup' className="text-emerald-500 hover:text-emerald-700">Signup</Link></p>

@@ -2,6 +2,7 @@
 import { PrismaClient } from "@prisma/client";
 import { cookies } from "next/headers";
 import { verifyToken } from "../utils/auth";
+import { redirect } from "next/navigation";
 
 const prisma = new PrismaClient()
 
@@ -10,7 +11,8 @@ export async function getUserFromToken() {
     const token = cookies().get('session')?.value
 
     if(!token){
-        return null;
+        redirect('/auth/signin')
+        
     }
 
     try {
@@ -22,8 +24,7 @@ export async function getUserFromToken() {
         })
         return user; 
       } catch (error) {
-        console.error('Invalid token:', error);
-        return null;
+        redirect('/auth/signin')
       }
 
 }

@@ -18,7 +18,7 @@ const Signup = () => {
     const res = await signup(formData);
 
     if(res.success){
-        router.push('/dashboard')
+        router.push('/profile')
     }
 
     if (res.errors) {
@@ -46,6 +46,7 @@ const Signup = () => {
             <div className="flex flex-col gap-2">
               <TextField type="text" title="Full Name" id="fullName" error={errors.fullName} />
               <TextField type="email" title="Email" id="email" error={errors.email} />
+              <TextField type="username" title="Username" id="username" error={errors.username} />
               <TextField type="text" title="Address" id="address" error={errors.address} />
               <TextField type="text" title="Phone Number" id="phoneNumber" error={errors.phoneNumber} />
               <TextField type="password" title="Password" id="password" error={errors.password} />

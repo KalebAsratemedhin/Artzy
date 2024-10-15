@@ -11,6 +11,7 @@ const prisma = new PrismaClient();
 const signupSchema = z.object({
     fullName: z.string().min(1, { message: "Full name is required" }),
     email: z.string().email({ message: "Invalid email address" }),
+    username: z.string().min(6, { message: "Username must be at least 5 characters long." }),
     address: z.string().min(1, { message: "Address is required" }),
     phoneNumber: z.string().min(10, { message: "Invalid phone number" }), 
     password: z.string().min(6, { message: "Password must be at least 6 characters long" }),
@@ -30,6 +31,7 @@ export async function signup(formData: FormData) {
     const rawFormData: SignupFormData = {
       fullName: formData.get('fullName')?.toString() || "",
       email: formData.get('email')?.toString() || "",
+      username: formData.get('username')?.toString() || "",
       address: formData.get('address')?.toString() || "",
       phoneNumber: formData.get('phoneNumber')?.toString() || "",
       password: formData.get('password')?.toString() || "",
@@ -42,6 +44,7 @@ export async function signup(formData: FormData) {
       data: {
         fullName: parsedData.fullName,
         email: parsedData.email,
+        username: parsedData.username,
         address: parsedData.address,
         phoneNumber: parsedData.phoneNumber,
         password: hashedPassword,
@@ -77,6 +80,7 @@ export async function signup(formData: FormData) {
 
 
 export async function signin(formData: FormData){
+  console.log('mello', formData)
 
     try {
       const rawFormData: SigninFormData = {
@@ -93,18 +97,24 @@ export async function signin(formData: FormData){
           }
       })
 
-
-      if(!user || await verifyPassword(parsedData.password, user.password)){
+      if(!user){
           
-          throw new Error('Invalid credentials');
+        return {error: 'Invalid credentials'}
       }
+
+      const isMatch = await verifyPassword(parsedData.password, user.password)
+
+      if(!isMatch){
+        return {error: 'Invalid credentials'}
+      }
+      console.log('ismatch', isMatch)
 
       const token = await generateToken(user)
       cookies().set('session', token, {
         httpOnly: true,
         sameSite: 'strict',
         secure: true,
-        expires: new Date().setMinutes(new Date().getMinutes() + 3600),
+        expires: new Date().setHours(new Date().getHours() + 2),
         path: '/'
       })
 
@@ -120,7 +130,7 @@ export async function signin(formData: FormData){
         );
         return { errors: validationErrors };
       } else {
-        return { error: 'Signup error occurred' };
+        return { error: 'Error'};
       }
     }
 
@@ -129,4 +139,8 @@ export async function signin(formData: FormData){
 export async function getToken() {
   const token = cookies().get('session');
   return token || null;
+}
+
+export async function signout() {
+
 }
