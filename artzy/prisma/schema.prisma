@@ -36,10 +36,11 @@ model User {
 }
 
 model Post {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid()) @db.Uuid
   title       String   
+  price       Int
   description String
-  picUrl      String
+  picUrls     String[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   
@@ -53,16 +54,16 @@ model Post {
 
 
 model Comment {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid()) @db.Uuid
   content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
   // Relationships
-  userId    String    @db.Uuid
+  userId    String   @db.Uuid
   user      User     @relation(fields: [userId], references: [id], map: "Comment_User_FK") // Many-to-one relation (Comment belongs to a User)
   
-  postId    Int
+  postId    String   @db.Uuid
   post      Post     @relation(fields: [postId], references: [id], map: "Comment_Post_FK") // Many-to-one relation (Comment belongs to a Post)
 }
 

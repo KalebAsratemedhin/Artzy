@@ -1,10 +1,10 @@
 'use client'
-import TextField from "./TextField"
+import TextField from "../Shared/TextField"
 import { signin } from "@/server/actions/auth"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
-import ErrorMessage from "./ErrorMessage"
+import { useEffect, useState } from "react"
+import ErrorMessage from "../Shared/ErrorMessage"
 
 const Signin = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -30,6 +30,10 @@ const Signin = () => {
       setError(res.error)
     }
   };
+
+  useEffect(() => {
+
+  },)
 
   return (
     <div className="min-h-screen flex justify-center items-center p-4 font-poppins">

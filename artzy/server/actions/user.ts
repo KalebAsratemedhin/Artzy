@@ -1,10 +1,8 @@
 'use server'
-import { PrismaClient } from "@prisma/client";
 import { cookies } from "next/headers";
 import { verifyToken } from "../utils/auth";
 import { redirect } from "next/navigation";
-
-const prisma = new PrismaClient()
+import prisma from "@/server/utils/prisma";
 
 
 export async function getUserFromToken() {

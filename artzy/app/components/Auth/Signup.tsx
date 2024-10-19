@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { signup } from '@/server/actions/auth';
-import TextField from './TextField';
+import TextField from '../Shared/TextField';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 

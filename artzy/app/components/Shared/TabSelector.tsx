@@ -16,6 +16,7 @@ const TabSelector = ({tabs, contents}: {tabs: string[], contents: React.ReactNod
           tabs.map((tab, index) => {
             return (
               <button
+                key={index}
                 className={`py-2 px-4  focus:outline-none
                 ${
                   activeTab === index ? 'border-b-2 border-emerald-500 text-emerald-600' : 'text-emerald-300'

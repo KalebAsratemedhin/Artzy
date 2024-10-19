@@ -1,7 +1,8 @@
-import Bookmarks from "@/app/components/Bookmarks"
-import Likes from "@/app/components/Likes"
-import Posts from "@/app/components/Posts"
-import TabSelector from "@/app/components/TabSelector"
+import Bookmarks from "@/app/components/Bookmarks/Bookmarks"
+import Likes from "@/app/components/Likes/Likes"
+import Posts from "@/app/components/Post/index"
+import TabSelector from "@/app/components/Shared/TabSelector"
+import { getPosts } from "@/server/actions/post"
 import { getUserFromToken } from "@/server/actions/user"
 
 const page = async () => {
@@ -39,15 +40,8 @@ const page = async () => {
 
         <div>
           <TabSelector tabs={['Posts', 'Likes', 'Bookmarks']} contents={[<Posts />, <Likes />, <Bookmarks />]}  />
-
         </div>
-
-
-
-
-
     </div>
-
   )
 }
 

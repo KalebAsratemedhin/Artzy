@@ -1,12 +1,11 @@
 'use server'
 
 import { z } from 'zod';
-import { PrismaClient } from "@prisma/client";
-import { generateToken, hashPassword, verifyPassword } from '../utils/auth';
+import { generateToken, hashPassword, verifyPassword, verifyToken } from '../utils/auth';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import prisma from "@/server/utils/prisma";
 
-
-const prisma = new PrismaClient();
 
 const signupSchema = z.object({
     fullName: z.string().min(1, { message: "Full name is required" }),
@@ -114,9 +113,10 @@ export async function signin(formData: FormData){
         httpOnly: true,
         sameSite: 'strict',
         secure: true,
-        expires: new Date().setHours(new Date().getHours() + 2),
+        expires: new Date(new Date().setHours(new Date().getHours() + 2)), 
         path: '/'
       })
+      
 
       return { success: true };
     } catch (error) {
@@ -136,11 +136,24 @@ export async function signin(formData: FormData){
 
 }
 
-export async function getToken() {
-  const token = cookies().get('session');
-  return token || null;
+export async function decodeToken() {
+  const token = cookies().get('session')?.value
+
+    if(!token){
+        redirect('/auth/signin')        
+    }
+
+    try {
+        const decoded = await verifyToken(token)!; 
+        return decoded
+
+    } catch(error){
+      return null
+    }
 }
 
 export async function signout() {
 
 }
+
+
